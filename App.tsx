@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import type {PropsWithChildren} from 'react';
+import type { PropsWithChildren } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -25,11 +25,18 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import BooksComponents from './src/Components/BooksComponents';
+import UsersComponents from './src/Components/UsersComponents';
+import PedidosComponents from './src/Components/PedidosComponents';
+import PedidosDetComponents from './src/Components/PedidosDetComponents';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
+const Stack = createStackNavigator();
+function Section({ children, title }: SectionProps): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -39,7 +46,8 @@ function Section({children, title}: SectionProps): React.JSX.Element {
           {
             color: isDarkMode ? Colors.white : Colors.black,
           },
-        ]}>
+        ]}
+      >
         {title}
       </Text>
       <Text
@@ -48,7 +56,8 @@ function Section({children, title}: SectionProps): React.JSX.Element {
           {
             color: isDarkMode ? Colors.light : Colors.dark,
           },
-        ]}>
+        ]}
+      >
         {children}
       </Text>
     </View>
@@ -62,41 +71,41 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+  return (      
+      <View style={styles.container}>
+        <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={BooksComponents}
+            options={{ title: 'Libros' }}
+          />
+          <Stack.Screen
+            name="Details"
+            component={UsersComponents}
+            options={{ title: 'Usuarios' }}
+          />
+          <Stack.Screen
+            name="Pedidos"
+            component={PedidosComponents}
+            options={{ title: 'Pedidos' }}
+          />
+          <Stack.Screen
+            name="PedidosDet"
+            component={PedidosDetComponents}
+            options={{ title: 'Detalles del pedido' }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+      </View>
+   
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1, // Asegura que el contenido se expanda para llenar el SafeAreaView
+  },
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
